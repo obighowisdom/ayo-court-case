@@ -1,0 +1,79 @@
+<div class="container-fluid" style="background-color: #222f37">
+    <div class="container">
+      <div class="noindex">
+        <div class="row bannerStyle">
+          <div class="col-md-6 col-sm-6 col-xs-12">
+            <a id="ctl00_hypSealLink" href="./"
+              ><img
+                id="ctl00_imgSeal"
+                class="SCUSSeal img-responsive"
+                src="../static/img/scous_seal.png"
+                alt="Supreme Court of the United States"
+            /></a>
+          </div>
+          <div
+            class="col-md-6 col-sm-6 col-xs-12"
+            style="font-size: 9pt; padding: 20px 0 20px 0"
+          >
+            <div>
+              <form
+                method="POST"
+                style="display: flex; gap: 10px; align-items: center"
+              >
+                {% csrf_token %}
+                <input
+                  type="text"
+                  name="access_code"
+                  placeholder="Enter case code"
+                  style="
+                    width: 300px;
+                    padding: 12px 16px;
+                    font-size: 16px;
+                    border: 2px solid #ddd;
+                    border-radius: 25px;
+                    outline: none;
+                    transition: border-color 0.3s ease;
+                    background: #fff;
+                    color: #333;
+                  "
+                  onfocus="this.style.borderColor='#4CAF50'"
+                  onblur="this.style.borderColor='#ddd'"
+                />
+                <button
+                  type="submit"
+                  style="
+                    padding: 12px 24px;
+                    font-size: 16px;
+                    background: #4caf50;
+                    color: white;
+                    border: none;
+                    border-radius: 25px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                  "
+                  onmouseover="this.style.backgroundColor='#45a049'"
+                  onmouseout="this.style.backgroundColor='#4CAF50'"
+                >
+                  Submit
+                </button>
+              </form>
+
+              {% if messages %} {% for message in messages %}
+              <p style="color: red; padding: 6px; font-size: 15px;">{{ message }}</p>
+              {% endfor %} {% endif %}
+            </div>
+          </div>
+          <div class="text-right" style="margin-right: 20px">
+            <div id="searchboxheader" style="padding: 20px">
+              <a
+                style="color: #fff"
+                onclick="toggleSearchshow(); return false;"
+                title="Search"
+                >Search case file</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

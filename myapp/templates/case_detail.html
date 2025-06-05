@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Court Case File Viewer</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-brown: #8b4513;
+        --light-brown: #d2b48c;
+        --dark-blue: #1e3a8a;
+        --light-blue: #3b82f6;
+      }
+
+      body {
+        background: linear-gradient(
+          135deg,
+          var(--light-brown) 0%,
+          #f5e6d3 50%,
+          #e8d5c4 100%
+        );
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .case-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        margin: 40px auto;
+        max-width: 1200px;
+        overflow: hidden;
+        border: 2px solid var(--light-brown);
+      }
+
+      .case-header {
+        background: linear-gradient(
+          135deg,
+          var(--dark-blue) 0%,
+          var(--light-blue) 100%
+        );
+        color: white;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+      }
+
+      .case-header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><pattern id="scales" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M10,2 L18,10 L10,18 L2,10 Z" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="20" fill="url(%23scales)"/></svg>')
+          repeat;
+        opacity: 0.3;
+      }
+
+      .case-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .case-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+      }
+
+      .section-card {
+        background: white;
+        margin: 20px;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        border-left: 5px solid var(--primary-brown);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .section-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      }
+
+      .section-header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-brown),
+          var(--light-brown)
+        );
+        color: white;
+        padding: 20px;
+        font-size: 1.3rem;
+        font-weight: bold;
+        border-radius: 10px 10px 0 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-content {
+        padding: 25px;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .info-row:last-child {
+        border-bottom: none;
+      }
+
+      .info-label {
+        font-weight: 600;
+        color: var(--dark-blue);
+        flex: 0 0 150px;
+      }
+
+      .info-value {
+        color: #333;
+        flex: 1;
+        text-align: right;
+      }
+
+      .client-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--light-brown),
+          var(--primary-brown)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        margin: 0 auto 20px;
+        border: 4px solid white;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .download-section {
+        background: linear-gradient(
+          135deg,
+          var(--dark-blue),
+          var(--light-blue)
+        );
+        color: white;
+        padding: 30px;
+        text-align: center;
+        margin: 20px;
+        border-radius: 15px;
+      }
+
+      .download-btn {
+        background: var(--primary-brown);
+        border: none;
+        color: white;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        margin: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .download-btn:hover {
+        background: var(--light-brown);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        color: var(--dark-blue);
+      }
+
+      .badge-urgent {
+        background: linear-gradient(135deg, #dc3545, #ff6b7a);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .document-item {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+      }
+
+      .document-item:hover {
+        background: var(--light-brown);
+        color: white;
+        transform: translateX(10px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="case-container">
+        <!-- Header -->
+        <div class="case-header">
+          <h1 class="case-title">
+            <i class="fas fa-gavel me-3"></i>
+            Court Case File
+          </h1>
+          <p class="case-subtitle">
+            Secure Client Portal - Case Management System
+          </p>
+        </div>
+
+        <!-- Client Information Section -->
+        <div class="section-card">
+            
+          <div class="section-header">
+            <i class="fas fa-user"></i>
+            Client Information
+          </div>
+          <div class="section-content">
+            <div>
+                <h3>Case Number: <b>{{ case.case_number }}</b> </h3>
+            </div>
+            <div class="client-photo">
+              {% if case.client_photo %}
+              <img src="{{ case.client_photo.url }}" width="150" height="120" style="object-fit: cover; border-radius: 50%;" />
+              {% else %}
+              <p>No photo uploaded</p>
+              {% endif %}
+            </div>
+            <div class="info-row">
+              <span class="info-label">Name:</span>
+              <span class="info-value"
+                ><strong>{{ case.client_name }}</strong></span
+              >
+            </div>
+            <div class="info-row">
+              <span class="info-label">Email:</span>
+              <span class="info-value">{{ case.client_email }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{ case.client_tel }}</span>
+              </div>
+            <div class="info-row">
+              <span class="info-label">Address:</span>
+              <span class="info-value">{{ case.client_address }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Date of Birth:</span>
+              <span class="info-value"
+                >{{ case.client_dob|date:"F j, Y" }}</span
+              >
+            </div>
+            <div class="info-row">
+              <span class="info-label">Next of Kin:</span>
+              <span class="info-value"
+                >{{ case.next_of_kin|default:"N/A" }}</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Case Information Section -->
+        <div class="section-card">
+          <div class="section-header">
+            <i class="fas fa-balance-scale"></i>
+            Case Information
+          </div>
+          <div class="section-content">
+            <div class="info-row">
+              <span class="info-label">Title:</span>
+              <span class="info-value"
+                ><strong>{{ case.case_title }}</strong></span
+              >
+            </div>
+            <div class="info-row">
+              <span class="info-label">Description:</span>
+              <span class="info-value">{{ case.case_description }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Court:</span>
+              <span class="info-value">{{ case.court_name }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Next Trial Date:</span>
+              <span class="info-value">
+                <span class="badge-urgent">
+                  <i class="fas fa-calendar-alt me-2"></i>
+                  {{ case.trial_date }}
+                </span>
+              </span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Legal Fee:</span>
+              <span class="info-value"
+                ><strong style="color: var(--primary-brown)"
+                  >${{ case.case_fee }}</strong
+                ></span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents Section -->
+        <div class="section-card">
+          <div class="section-header">
+            <i class="fas fa-folder-open"></i>
+            Case Documents
+          </div>
+          <div class="section-content">
+           
+            <!-- <div class="document-item">
+              <div>
+                <i
+                  class="fas fa-file-alt me-2"
+                  style="color: var(--dark-blue)"
+                ></i>
+                
+              </div>
+              <button class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-download"></i>
+              </button>
+            </div> -->
+         
+          </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="download-section">
+          <h3 class="mb-4">
+            <i class="fas fa-download me-3"></i>
+            Download Complete Case Files
+          </h3>
+          <p class="mb-4">
+            Get all your case documents in one comprehensive package
+          </p>
+          {% for doc in case.documents.all %}
+          <li style="text-decoration: none; text-emphasis: none; list-style-type: none;">
+            <a style="text-decoration: none;" href="{{ doc.file.url }}" target="_blank"
+              ><button class="download-btn">Download {{ doc.file.name|slice:"30:" }}</button></a
+            >
+          </li>
+          {% empty %}
+          <li>No documents uploaded</li>
+          {% endfor %}
+         
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function downloadCase() {
+        // Simulate download
+        const link = document.createElement("a");
+        link.download = "Johnny_Michhs_Case_Complete.zip";
+        link.href = "#";
+
+        // Show download notification
+        alert(
+          "📁 Complete case file download started!\n\nFile: Johnny_Michhs_Case_Complete.zip\nSize: ~15.2 MB\n\nThank you for using our secure portal."
+        );
+      }
+
+      function downloadPDF() {
+        // Simulate PDF download
+        const link = document.createElement("a");
+        link.download = "Johnny_Michhs_Case_Summary.pdf";
+        link.href = "#";
+
+        // Show download notification
+        alert(
+          "📄 Case summary PDF download started!\n\nFile: Johnny_Michhs_Case_Summary.pdf\nSize: ~2.8 MB\n\nDocument includes: Client info, case details, and timeline."
+        );
+      }
+
+      // Add some interactive effects
+      document.addEventListener("DOMContentLoaded", function () {
+        // Animate cards on scroll
+        const cards = document.querySelectorAll(".section-card");
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = "1";
+              entry.target.style.transform = "translateY(0)";
+            }
+          });
+        });
+
+        cards.forEach((card) => {
+          card.style.opacity = "0";
+          card.style.transform = "translateY(20px)";
+          card.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+          observer.observe(card);
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h2>Court Case Details</h2>
+
+    <h3>Client Information</h3>
+    <ul>
+      <li><strong>Name:</strong> {{ case.client_name }}</li>
+      <li><strong>Email:</strong> {{ case.client_email }}</li>
+      <li><strong>Address:</strong> {{ case.client_address }}</li>
+      <li>
+        <strong>Date of Birth:</strong> {{ case.client_dob|date:"F j, Y" }}
+      </li>
+      <li>
+        <strong>Next of Kin:</strong> {{ case.next_of_kin|default:"N/A" }}
+      </li>
+      <li>
+        <strong>Photo:</strong><br />
+        {% if case.client_photo %}
+        <img src="{{ case.client_photo.url }}" width="150" />
+        {% else %}
+        <p>No photo uploaded</p>
+        {% endif %}
+      </li>
+    </ul>
+
+    <h3>Case Information</h3>
+    <ul>
+      <li><strong>Title:</strong> {{ case.case_title }}</li>
+      <li><strong>Description:</strong> {{ case.case_description }}</li>
+      <li><strong>Court:</strong> {{ case.court_name }}</li>
+      <li><strong>Next Trial Date:</strong> {{ case.trial_date }}</li>
+      <li><strong>Fee:</strong> ${{ case.case_fee }}</li>
+    </ul>
+
+    <h3>Documents</h3>
+    <ul>
+      {% for doc in case.documents.all %}
+      <li>
+        <a href="{{ doc.file.url }}" target="_blank"
+          >Download {{ doc.file.name|slice:"30:" }}</a
+        >
+      </li>
+      {% empty %}
+      <li>No documents uploaded</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html> -->
