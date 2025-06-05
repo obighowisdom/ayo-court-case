@@ -109,7 +109,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://ayo-court-case.onrender.com',
+    'https://federalcourtcase.us'
+   
+]
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -118,8 +122,6 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
-
-USE_TZ = True
 
 SITE_ID = 1
 
