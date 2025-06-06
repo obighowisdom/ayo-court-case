@@ -15,6 +15,12 @@ urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
     path('register/', SignUpView.as_view(), name='register'),
     path('opinion/', views.opinion, name='opinion'),
+    path('filing/', views.filing, name='filing'),
+    path('case/', views.case, name='case'),
+    path('about/', views.about, name='about'),
+    path('news/', views.news, name='news'),
+    path('about/', views.about, name='about'),
+    path('oral/', views.oral, name='oral'),
     path('case/<str:access_code>/', views.access_case, name='access_case'),
 
     

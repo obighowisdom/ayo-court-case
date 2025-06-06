@@ -48,6 +48,28 @@ def opinion(request):
     
     return render(request, 'opinion.html')
 
+def filing(request):
+    
+    return render(request, 'filing.html')
+
+def case(request):
+    
+    return render(request, 'case.html')
+
+def news(request):
+    
+    return render(request, 'news.html')
+
+def oral(request):
+    
+    return render(request, 'oral.html')
+
+def about(request):
+    
+    return render(request, 'about.html')
+
+
+
 # views.py
 # views.py
 
